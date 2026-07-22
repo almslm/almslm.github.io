@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f0f0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            display: flex;
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+            flex-wrap: wrap;
+        }
+
+        .content {
+            flex: 1;
+            min-width: 300px;
+            background: #fff;
+            padding: 30px;
+            border: 1px solid #ccc;
+        }
+
+        h1 {
+            font-size: 32px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        h2 {
+            font-size: 24px;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        p {
+            margin-bottom: 15px;
+            color: #555;
+        }
+
+        ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            color: #555;
+        }
+
+        .calculator-wrapper {
+            flex-shrink: 0;
+        }
+
+        .calculator {
+            background: #fff;
+            padding: 15px;
+            width: 320px;
+            border: 1px solid #ccc;
+        }
+
+        .display {
+            background: #fff;
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin-bottom: 15px;
+            text-align: right;
+            min-height: 80px;
+        }
+
+        .previous-operand {
+            color: #888;
+            font-size: 14px;
+            min-height: 18px;
+            word-wrap: break-word;
+        }
+
+        .current-operand {
+            color: #000;
+            font-size: 28px;
+            word-wrap: break-word;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 5px;
+        }
+
+        button {
+            border: 1px solid #ccc;
+            padding: 18px;
+            font-size: 18px;
+            cursor: pointer;
+            background: #fff;
+            color: #000;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+
+        button:active {
+            background: #ddd;
+        }
+
+        .operator {
+            background: #ff9500;
+            color: #fff;
+        }
+
+        .operator:active {
+            background: #e08600;
+        }
+
+        .function {
+            background: #8e8e93;
+            color: #fff;
+        }
+
+        .function:active {
+            background: #6e6e73;
+        }
+
+        .equals {
+            background: #007aff;
+            color: #fff;
+        }
+
+        .equals:active {
+            background: #005ecb;
+        }
+
+        .clear {
+            background: #ff3b30;
+            color: #fff;
+        }
+
+        .clear:active {
+            background: #d63028;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .calculator-wrapper {
+                width: 100%;
+                display: flex;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="content">
+            <h1>Калькулятор</h1>
+            <p>Простой и быстрый калькулятор для выполнения базовых математических операций. Поддерживает как управление мышью, так и ввод с клавиатуры.</p>
+
+            <h2>Как использовать</h2>
+            <ul>
+                <li>Вводите числа, нажимая на кнопки или используя клавиатуру</li>
+                <li>Выбирайте операцию (+, −, ×, ÷, %)</li>
+                <li>Нажимайте = для получения результата</li>
+                <li>Используйте ⌫ для удаления последнего символа</li>
+                <li>Кнопка C очищает все введенные данные</li>
+                <li>Кнопка √ вычисляет квадратный корень из текущего числа</li>
+            </ul>
+
+            <h2>Управление с клавиатуры</h2>
+            <ul>
+                <li><strong>0-9</strong> — ввод цифр</li>
+                <li><strong>+ - * /</strong> — математические операции</li>
+                <li><strong>s</strong> — вычисление квадратного корня</li>
+                <li><strong>Enter или =</strong> — вычисление результата</li>
+                <li><strong>Backspace</strong> — удаление последнего символа</li>
+                <li><strong>Escape или C</strong> — полная очистка</li>
+            </ul>
+
+            <h2>Кнопка % (остаток от деления)</h2>
+            <p>Кнопка <strong>%</strong> вычисляет остаток от деления первого числа на второе (операция modulo).</p>
+            
+            <p><strong>Примеры:</strong></p>
+            <ul>
+                <li><strong>10 % 3 = 1</strong> — 10 делится на 3, остаток 1</li>
+                <li><strong>15 % 4 = 3</strong> — 15 делится на 4, остаток 3</li>
+                <li><strong>20 % 5 = 0</strong> — 20 делится на 5 без остатка</li>
+            </ul>
+
+            <h2>Кнопка √ (квадратный корень)</h2>
+            <p>Кнопка <strong>√</strong> вычисляет квадратный корень из текущего числа на экране. Это унарная операция — она применяется к числу сразу после нажатия.</p>
+            
+            <p><strong>Примеры:</strong></p>
+            <ul>
+                <li><strong>√9 = 3</strong></li>
+                <li><strong>√16 = 4</strong></li>
+                <li><strong>√2 ≈ 1.4142135624</strong></li>
+            </ul>
+
+            <p><strong>Как использовать:</strong></p>
+            <ol style="margin-left: 20px; margin-bottom: 15px; color: #555;">
+                <li>Введите число (например, 25)</li>
+                <li>Нажмите кнопку √</li>
+                <li>Результат появится сразу: 5</li>
+                <li>Можно продолжить вычисления (например, нажать + 3 = 8)</li>
+            </ol>
+
+            <p>Если попытаться вычислить корень из отрицательного числа, калькулятор покажет «Ошибка».</p>
+        </div>
+
+        <div class="calculator-wrapper">
+            <div class="calculator">
+                <div class="display">
+                    <div class="previous-operand" id="previousOperand"></div>
+                    <div class="current-operand" id="currentOperand">0</div>
+                </div>
+                <div class="buttons">
+                    <button class="clear" onclick="calculator.clear()">C</button>
+                    <button onclick="calculator.delete()">⌫</button>
+                    <button class="function" onclick="calculator.sqrt()">√</button>
+                    <button class="operator" onclick="calculator.chooseOperator('/')">÷</button>
+                    
+                    <button onclick="calculator.appendNumber('7')">7</button>
+                    <button onclick="calculator.appendNumber('8')">8</button>
+                    <button onclick="calculator.appendNumber('9')">9</button>
+                    <button class="operator" onclick="calculator.chooseOperator('*')">×</button>
+                    
+                    <button onclick="calculator.appendNumber('4')">4</button>
+                    <button onclick="calculator.appendNumber('5')">5</button>
+                    <button onclick="calculator.appendNumber('6')">6</button>
+                    <button class="operator" onclick="calculator.chooseOperator('-')">−</button>
+                    
+                    <button onclick="calculator.appendNumber('1')">1</button>
+                    <button onclick="calculator.appendNumber('2')">2</button>
+                    <button onclick="calculator.appendNumber('3')">3</button>
+                    <button class="operator" onclick="calculator.chooseOperator('+')">+</button>
+                    
+                    <button onclick="calculator.appendNumber('0')">0</button>
+                    <button onclick="calculator.appendNumber('.')">.</button>
+                    <button class="operator" onclick="calculator.chooseOperator('%')">%</button>
+                    <button class="equals" onclick="calculator.compute()">=</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class Calculator {
+            constructor() {
+                this.currentOperand = '0';
+                this.previousOperand = '';
+                this.operation = null;
+                this.shouldResetScreen = false;
+                
+                this.currentOperandElement = document.getElementById('currentOperand');
+                this.previousOperandElement = document.getElementById('previousOperand');
+                
+                this.initKeyboard();
+            }
+
+            initKeyboard() {
+                document.addEventListener('keydown', (e) => {
+                    if (e.key >= '0' && e.key <= '9') this.appendNumber(e.key);
+                    if (e.key === '.') this.appendNumber('.');
+                    if (e.key === '+' || e.key === '-' || e.key === '*' || e.key === '/' || e.key === '%') {
+                        this.chooseOperator(e.key);
+                    }
+                    if (e.key === 's' || e.key === 'S' || e.key === 'ы' || e.key === 'Ы') {
+                        this.sqrt();
+                    }
+                    if (e.key === 'Enter' || e.key === '=') {
+                        e.preventDefault();
+                        this.compute();
+                    }
+                    if (e.key === 'Backspace') this.delete();
+                    if (e.key === 'Escape' || e.key === 'c' || e.key === 'C') this.clear();
+                });
+            }
+
+            clear() {
+                this.currentOperand = '0';
+                this.previousOperand = '';
+                this.operation = null;
+                this.updateDisplay();
+            }
+
+            delete() {
+                if (this.currentOperand === 'Ошибка') {
+                    this.clear();
+                    return;
+                }
+                
+                if (this.currentOperand.length === 1 || (this.currentOperand.length === 2 && this.currentOperand.startsWith('-'))) {
+                    this.currentOperand = '0';
+                } else {
+                    this.currentOperand = this.currentOperand.slice(0, -1);
+                }
+                this.updateDisplay();
+            }
+
+            appendNumber(number) {
+                if (this.currentOperand === 'Ошибка' || this.shouldResetScreen) {
+                    this.currentOperand = '';
+                    this.shouldResetScreen = false;
+                }
+
+                if (number === '.' && this.currentOperand.includes('.')) return;
+                
+                if (this.currentOperand === '0' && number !== '.') {
+                    this.currentOperand = number;
+                } else {
+                    this.currentOperand += number;
+                }
+                
+                this.updateDisplay();
+            }
+
+            chooseOperator(op) {
+                if (this.currentOperand === 'Ошибка') return;
+                
+                if (this.previousOperand !== '') {
+                    this.compute();
+                }
+                
+                this.operation = op;
+                this.previousOperand = this.currentOperand + ' ' + this.getOperatorSymbol(op);
+                this.shouldResetScreen = true;
+                this.updateDisplay();
+            }
+
+            sqrt() {
+                if (this.currentOperand === 'Ошибка') return;
+                
+                const current = parseFloat(this.currentOperand);
+                if (isNaN(current)) return;
+                
+                if (current < 0) {
+                    this.currentOperand = 'Ошибка';
+                    this.previousOperand = '';
+                    this.operation = null;
+                    this.updateDisplay();
+                    return;
+                }
+                
+                const result = Math.sqrt(current);
+                this.currentOperand = this.formatResult(result);
+                this.shouldResetScreen = false;
+                this.updateDisplay();
+            }
+
+            getOperatorSymbol(op) {
+                const symbols = {
+                    '+': '+',
+                    '-': '−',
+                    '*': '×',
+                    '/': '÷',
+                    '%': '%'
+                };
+                return symbols[op] || op;
+            }
+
+            compute() {
+                if (this.operation === null || this.shouldResetScreen) return;
+                
+                let computation;
+                const prev = parseFloat(this.previousOperand);
+                const current = parseFloat(this.currentOperand);
+                
+                if (isNaN(prev) || isNaN(current)) return;
+                
+                switch (this.operation) {
+                    case '+':
+                        computation = prev + current;
+                        break;
+                    case '-':
+                        computation = prev - current;
+                        break;
+                    case '*':
+                        computation = prev * current;
+                        break;
+                    case '/':
+                        if (current === 0) {
+                            this.currentOperand = 'Ошибка';
+                            this.previousOperand = '';
+                            this.operation = null;
+                            this.updateDisplay();
+                            return;
+                        }
+                        computation = prev / current;
+                        break;
+                    case '%':
+                        computation = prev % current;
+                        break;
+                    default:
+                        return;
+                }
+                
+                this.currentOperand = this.formatResult(computation);
+                this.previousOperand = '';
+                this.operation = null;
+                this.updateDisplay();
+            }
+
+            formatResult(number) {
+                if (Number.isInteger(number)) {
+                    return number.toString();
+                }
+                return parseFloat(number.toFixed(10)).toString();
+            }
+
+            updateDisplay() {
+                this.currentOperandElement.textContent = this.currentOperand;
+                this.previousOperandElement.textContent = this.previousOperand;
+            }
+        }
+
+        const calculator = new Calculator();
+    </script>
+</body>
+</html>
