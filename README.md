@@ -5,6 +5,10 @@
 أدرس وأتعلم HTML وCSS
 
 
-https://almuslim.net
+https://almslm.github.io
+
+https://almuslimnet.github.io
+
+http://almuslim.net
 
 والحمد لله رب العالمين
